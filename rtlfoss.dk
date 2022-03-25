@@ -10,6 +10,7 @@ RUN \
     nano \
     wget \
     base-devel \
+    openssh \
     git \
     net-tools && \
     groupadd sudo && echo "%sudo   ALL=(ALL) ALL" >> /etc/sudoers && \
