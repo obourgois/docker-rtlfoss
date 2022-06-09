@@ -1,0 +1,37 @@
+# start from our rtlfoss:base image
+FROM rtlfoss:base
+
+# non-root user and credential
+ARG RUNNER=toto
+ARG RUNNER_PWD=toto
+
+RUN \
+    useradd -m ${RUNNER} && echo ${RUNNER}:${RUNNER_PWD} | chpasswd && usermod -aG sudo ${RUNNER_PWD} && \
+    echo "[multilib]" >> /etc/pacman.conf && \
+    echo "Include = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf && \
+    pacman -Sy
+
+# Makepkg needs a standard user to build
+USER ${RUNNER}
+WORKDIR /home/${RUNNER}
+
+# Download and build Aur package => but we need lib32-ncurses5-compat-libs first
+RUN \
+    git clone https://aur.archlinux.org/lib32-ncurses5-compat-libs.git && cd lib32-ncurses5-compat-libs &&\
+    gpg --recv-keys 19882D92DDA4C400C22C0D56CC2AF4472167BE03 &&\
+    DEPS=$(sed -n 's/.*depends = //p' .SRCINFO) &&\
+    echo ${RUNNER_PWD} | sudo -S pacman --noconfirm -S $DEPS &&\
+    makepkg --noconfirm && echo ${RUNNER_PWD} | sudo -S pacman -U --noconfirm lib32-ncurses5-compat-libs*.pkg.tar.zst && cd ../ &&\
+    \
+    git clone https://aur.archlinux.org/modelsim-intel-starter.git && cd modelsim-intel-starter &&\
+    sed -i '/lib32-ncurses5-compat-libs/d' .SRCINFO &&\
+    DEPS=$(sed -n 's/.*depends = //p' .SRCINFO) &&\
+    echo ${RUNNER_PWD} | sudo -S pacman --noconfirm -S $DEPS &&\
+    makepkg --noconfirm && echo ${RUNNER_PWD} | sudo -S pacman -U --noconfirm modelsim-intel-starter*.pkg.tar.zst && cd ../ &&\
+    \
+    rm -rf modelsim-intel-starter &&\
+    echo ${RUNNER_PWD} | sudo -S pacman --noconfirm -Scc
+
+# back to root user
+USER root
+WORKDIR /root

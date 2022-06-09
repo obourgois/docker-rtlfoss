@@ -28,10 +28,10 @@ This Docker image regroups some handy tools for RTL digital design using Free Op
 ## Running on Linux Host
 
 ```
-xhost && \
-docker run -it --rm \
+xhost + && \
+docker run -it --rm --workdir /home/$USER \
 --volume="/home/$USER:/home/$USER" \
--e DISPLAY=$(DISPLAY) -v /tmp/.X11-unix/:/tmp/.X11-unix \
+-e DISPLAY=${DISPLAY} -v /tmp/.X11-unix/:/tmp/.X11-unix \
 rtlfoss:base
 ```
 
@@ -44,7 +44,7 @@ rtlfoss:base
 ### Command line:
 ```
 xhost + && \
-docker run -it --rm \
+docker run -it --rm --workdir /home/$USER \
 --volume="/Users/$USER:/home/$USER" \
 -e DISPLAY=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}'):0 \
 rtlfoss:base
