@@ -1,4 +1,5 @@
 # start from the official Arch base image
+# note we are pinning last known good riscv64 packages for now.
 FROM archlinux:base
 
 RUN \
@@ -11,6 +12,9 @@ RUN \
     wget \
     base-devel \
     openssh \
+    sshpass \
+    sshfs \
+    screen \
     git \
     net-tools && \
     groupadd sudo && echo "%sudo   ALL=(ALL) ALL" >> /etc/sudoers && \
@@ -29,5 +33,5 @@ RUN \
     gtkwave \
     rclone && \
     \
-    echo "package cleanup to save space" && \
+    echo "package cleanup to save space" &&\
     pacman --noconfirm -Scc

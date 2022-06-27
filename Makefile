@@ -1,18 +1,32 @@
 # Docker for FOSS RTL tools
-
+# Note for running on MAC with XQuarz you need to use the run_mac recipe
 all: build
 
 # launch the docker container creation
 build: 
 	@echo "Building rtlfoss:base image"
-	@docker build -f rtlfoss.dk -t rtlfoss:base .
+	@docker build --platform linux/amd64 -f rtlfoss.dk -t rtlfoss:base .
 
 run:
 	@echo "Starting Base RTL FOSS Docker"
 	@xhost +
-	docker run -it --rm --workdir /home/$(USER) \
+	docker run -it --rm  \
+--platform linux/amd64 \
+--workdir /home/$(USER) \
+--env=DISPLAY=$(DISPLAY) \
+--volume /tmp/.X11-unix/:/tmp/.X11-unix:rw \
 --volume="/home/$(USER):/home/$(USER)" \
--e DISPLAY=$(DISPLAY) -v /tmp/.X11-unix/:/tmp/.X11-unix \
+rtlfoss:base
+
+run_mac:
+	@echo "Starting Base RTL FOSS Docker"
+	@xhost +
+	docker run -it --rm \
+--platform linux/amd64 \
+--workdir /home/$(USER) \
+--env=DISPLAY=host.docker.internal:0 \
+--volume /tmp/.X11-unix:/tmp/.X11-unix:rw \
+--volume="/Users/$(USER):/home/$(USER)" \
 rtlfoss:base
 
 clean:
