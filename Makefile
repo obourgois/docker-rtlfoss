@@ -5,7 +5,7 @@ all: build
 # launch the docker container creation
 build: 
 	@echo "Building rtlfoss:base image"
-	@docker build --platform linux/amd64 -f rtlfoss.dk -t rtlfoss:base .
+	@docker build --platform linux/amd64 -f Dockerfile -t rtlfoss:base .
 
 run:
 	@echo "Starting Base RTL FOSS Docker"
