@@ -49,7 +49,7 @@ WORKDIR /home/${RUNNER}
 # 1) Git version of GHDL for ghdl-yosys-plugin support
 # 2) The actual ghdl-yosys-plugin
 RUN \
-    echo ${RUNNER_PWD} | sudo -S pacman --noconfirm -S gcc-ada && \
+    echo ${RUNNER_PWD} | sudo -S pacman --noconfirm -S gcc-ada boost && \
     \
     git clone https://aur.archlinux.org/ghdl-gcc-git.git && cd ghdl-gcc-git && \
     makepkg --noconfirm && echo ${RUNNER_PWD} | sudo -S pacman --noconfirm -U ghdl-gcc-git*.pkg.tar.zst &&  cd ../ && rm -rf ghdl-gcc-git && \

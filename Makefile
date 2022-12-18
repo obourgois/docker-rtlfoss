@@ -11,6 +11,7 @@ run:
 	@echo "Starting Base RTL FOSS Docker"
 	@xhost +
 	docker run -it --rm  \
+--user $$(id -u):$$(id -g) \
 --platform linux/amd64 \
 --workdir /home/$(USER) \
 --env=DISPLAY=$(DISPLAY) \
@@ -22,6 +23,7 @@ run_mac:
 	@echo "Starting Base RTL FOSS Docker"
 	@xhost +
 	docker run -it --rm \
+--user $$(id -u):$$(id -g) \
 --platform linux/amd64 \
 --workdir /home/$(USER) \
 --env=DISPLAY=host.docker.internal:0 \
