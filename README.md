@@ -1,6 +1,8 @@
 # Generic FOSS RTL tools
-This Docker image regroups some handy tools for RTL digital design using Free Open Source Software
 
+These Docker image build scripts package up into a docker image some handy tools for RTL digital design using bleeding edge versions of Free Open Source Software.
+The goal is for RTL development using FOSS in CI environements or on Linux machines with distros where up-to-date packages are simply not available.  The packages used are
+from the Archlinux distro (including the AUR) as this rolling distro has been found to have just the right mix between stability and up-to-date versions
 
 
 ## FOSS software
@@ -24,28 +26,22 @@ This Docker image regroups some handy tools for RTL digital design using Free Op
 * to compile RISC-V code for RTL cores
 
 
+## Building the image
+The makefile will build an image and tag it **rtl-tools:foss**
 
-## Running on Linux Host
-
-```
-xhost + && \
-docker run -it --rm --workdir /home/$USER \
---volume="/home/$USER:/home/$USER" \
--e DISPLAY=${DISPLAY} -v /tmp/.X11-unix/:/tmp/.X11-unix \
-rtlfoss:base
+```bash
+cd rtl-tools
+make build
 ```
 
-## Running on MAC host
+## Running the image
 
-### Prerequisites
-* install Docker for Mac
-* install XQuartz
+If it doesn't exist, the makefile will build a slightly modified image where the internal
+"runner" user will get it's UID and GID mapped to current user.  It will then launch with current user's
+credentials in current user's home.  This is safer than running as root and files can be shared between user's home
+and the container.  The image will be tagged **rtl-tools:foss_username**
 
-### Command line:
-```
-xhost + && \
-docker run -it --rm --workdir /home/$USER \
---volume="/Users/$USER:/home/$USER" \
--e DISPLAY=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}'):0 \
-rtlfoss:base
+```bash
+cd rtl-tools
+make run
 ```

@@ -2,8 +2,11 @@
 FROM archlinux:base
 
 # non-root user and credentials
-ARG RUNNER=toto
-ARG RUNNER_PWD=toto
+ARG RUNNER_NAME
+
+# set environment variables
+ENV RUNNER=${RUNNER_NAME} \
+    RUNNER_PWD=${RUNNER_NAME}
 
 RUN \
     echo "upgrade base image + a few tweeks" &&\
@@ -20,7 +23,9 @@ RUN \
     screen \
     git \
     net-tools \
-    rclone && \
+    rclone \
+    rsync \ 
+    gtk3 && \
     \
     echo "create non-root user" &&\
     groupadd sudo && echo "%sudo   ALL=(ALL) ALL" >> /etc/sudoers && \
@@ -35,7 +40,6 @@ RUN \
     yosys \
     verilator \
     iverilog \
-    gtk3 \
     gtkwave && \
     \
     echo "package cleanup to save space" &&\
@@ -58,3 +62,5 @@ RUN \
     makepkg --noconfirm && echo ${RUNNER} | sudo -S pacman --noconfirm -U ghdl-yosys-plugin-git*.pkg.tar.zst && cd ../ && rm -rf ghdl-yosys-plugin-git && \
     \
     echo ${RUNNER_PWD} | sudo -S pacman --noconfirm -Scc
+
+USER root
